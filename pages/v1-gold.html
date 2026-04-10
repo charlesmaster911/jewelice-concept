@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JewelIce — 음료의 마지막 보석</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-glow: rgba(201,168,76,0.15);
+    --black: #080808;
+    --dark: #111;
+    --dark-card: #161616;
+    --gray: #777;
+    --white: #F5F5F0;
+    --cream: #FAFAF6;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── NAV (Tiffany-style minimal) ─── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 64px;
+    background: transparent;
+    transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  nav.scrolled {
+    background: rgba(8,8,8,0.92);
+    backdrop-filter: blur(24px) saturate(1.4);
+    padding: 18px 64px;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 600; letter-spacing: 6px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .nav-logo em {
+    font-style: normal; color: var(--gold);
+    font-weight: 300;
+  }
+  .nav-links { display:flex; gap:36px; align-items:center; }
+  .nav-links a {
+    color: rgba(255,255,255,0.6); text-decoration:none; font-size:11px;
+    letter-spacing: 3px; text-transform: uppercase; font-weight:400;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-shop {
+    color: var(--gold) !important;
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 10px 28px;
+    transition: all 0.3s !important;
+  }
+  .nav-shop:hover {
+    background: var(--gold) !important;
+    color: var(--black) !important;
+  }
+
+  /* ─── HERO — Full-bleed cinematic ─── */
+  .hero {
+    position: relative;
+    height: 100vh; min-height: 800px;
+    overflow: hidden;
+  }
+
+  /* Image background with cinematic overlay */
+  .hero-image {
+    position: absolute; inset: 0;
+    background:
+      url('../assets/images/hero/yeonchul_4.jpg') center center / cover no-repeat;
+    filter: brightness(0.55) contrast(1.15) saturate(1.1);
+    transform: scale(1.05);
+    animation: heroZoom 20s ease-out forwards;
+  }
+  @keyframes heroZoom {
+    from { transform: scale(1.12); }
+    to { transform: scale(1.0); }
+  }
+
+  /* Gradient overlays for text readability + luxury feel */
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg,
+        rgba(8,8,8,0.4) 0%,
+        rgba(8,8,8,0.1) 30%,
+        rgba(8,8,8,0.05) 50%,
+        rgba(8,8,8,0.5) 80%,
+        rgba(8,8,8,0.85) 100%
+      ),
+      linear-gradient(90deg,
+        rgba(8,8,8,0.6) 0%,
+        rgba(8,8,8,0.0) 60%
+      );
+  }
+
+  /* Gold light leak effect */
+  .hero-glow {
+    position: absolute;
+    width: 800px; height: 800px;
+    top: 20%; right: -10%;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 60%);
+    animation: glowPulse 6s ease-in-out infinite alternate;
+  }
+  @keyframes glowPulse {
+    from { opacity: 0.5; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.1); }
+  }
+
+  .hero-content {
+    position: relative; z-index: 10;
+    height: 100%; display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 64px 100px;
+    max-width: 1400px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 16px;
+    margin-bottom: 28px;
+    opacity:0; animation: fadeUp 1.2s 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-eyebrow-line {
+    width: 48px; height: 1px;
+    background: var(--gold);
+  }
+  .hero-eyebrow span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); font-weight: 400;
+    font-style: italic;
+  }
+
+  .hero-title {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: clamp(52px, 7.5vw, 110px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 8px;
+    opacity:0; animation: fadeUp 1.2s 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-title .line2 {
+    color: var(--gold);
+    text-shadow: 0 0 80px rgba(201,168,76,0.3);
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 32px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-light);
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+    opacity:0; animation: fadeUp 1.2s 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .hero-desc {
+    font-size: 15px; line-height: 2;
+    color: rgba(255,255,255,0.55);
+    max-width: 440px;
+    font-weight: 300; letter-spacing: 0.5px;
+    margin-bottom: 48px;
+    opacity:0; animation: fadeUp 1.2s 1.4s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+
+  .hero-cta-group {
+    display: flex; gap: 20px; align-items: center;
+    opacity:0; animation: fadeUp 1.2s 1.6s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .btn-gold {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: var(--gold); color: var(--black);
+    padding: 18px 44px; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none;
+    position: relative; overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-gold::before {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+  .btn-gold:hover::before { transform: translateX(100%); }
+  .btn-gold:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.35);
+  }
+  .btn-gold svg { width:14px; height:14px; }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: transparent; color: rgba(255,255,255,0.7);
+    padding: 17px 36px;
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer; font-size: 12px; font-weight: 400;
+    letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.4s;
+  }
+  .btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+
+  /* Scroll indicator */
+  .hero-scroll {
+    position: absolute; bottom: 32px;
+    left: 50%; transform: translateX(-50%);
+    z-index: 10;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity:0; animation: fadeUp 1s 2.2s forwards;
+  }
+  .hero-scroll span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .scroll-dot {
+    width: 1px; height: 48px; position: relative;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .scroll-dot::after {
+    content:''; position:absolute; top:-100%; left:0;
+    width:1px; height:100%;
+    background: var(--gold);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+  @keyframes scrollDown {
+    0% { top:-100%; } 50% { top:100%; } 100% { top:100%; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(40px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  /* ─── MARQUEE STRIP ─── */
+  .marquee-strip {
+    padding: 20px 0;
+    background: var(--gold);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee-inner {
+    display: inline-flex; gap: 60px;
+    animation: marquee 30s linear infinite;
+  }
+  .marquee-inner span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--black); font-weight: 600;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── INTRO SECTION — Cinematic split ─── */
+  .intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 90vh;
+  }
+  .intro-image {
+    background: url('../assets/images/hero/yeonchul_3.jpg') center center / cover no-repeat;
+    position: relative;
+  }
+  .intro-image::after {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(90deg, transparent 60%, var(--dark) 100%);
+  }
+  .intro-text {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px 80px 60px;
+    background: var(--dark);
+  }
+  .intro-text .section-label {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 40px;
+  }
+  .intro-text .section-label::before {
+    content:''; width:32px; height:1px; background: var(--gold);
+  }
+  .intro-text h2 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 900; line-height: 1.3;
+    margin-bottom: 32px;
+  }
+  .intro-text h2 .gold { color: var(--gold); }
+  .intro-text p {
+    font-size: 15px; line-height: 2; color: rgba(255,255,255,0.5);
+    max-width: 420px; font-weight: 300;
+  }
+  .intro-text blockquote {
+    margin-top: 40px; padding-left: 24px;
+    border-left: 2px solid var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-style: italic;
+    color: var(--gold-light); line-height: 1.6;
+  }
+
+  /* ─── TENSION ─── */
+  .tension {
+    padding: 140px 64px;
+    background: var(--cream);
+    color: var(--black);
+  }
+  .tension-header {
+    text-align: center; margin-bottom: 80px;
+  }
+  .tension-header .section-label {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px; justify-content:center;
+  }
+  .tension-header .section-label::before,
+  .tension-header .section-label::after {
+    content:''; width:32px; height:1px; background: var(--gold);
+  }
+  .tension-header h2 {
+    font-size: clamp(30px, 4vw, 52px);
+    font-weight: 900; line-height: 1.25;
+  }
+  .tension-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0; max-width: 1200px; margin: 0 auto;
+  }
+  .tension-card {
+    padding: 56px 44px;
+    border-right: 1px solid rgba(0,0,0,0.06);
+    transition: background 0.4s;
+    position: relative;
+  }
+  .tension-card:last-child { border-right: none; }
+  .tension-card:hover { background: white; }
+  .tension-card::before {
+    content:''; position:absolute; top:0; left:44px;
+    width: 32px; height: 2px; background: var(--gold);
+  }
+  .tension-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px; color: var(--gold); font-weight: 300;
+    line-height: 1; margin-bottom: 24px;
+  }
+  .tension-card h3 {
+    font-size: 19px; font-weight: 700; margin-bottom: 20px; line-height: 1.5;
+  }
+  .tension-card p {
+    font-size: 14px; line-height: 1.9; color: #888; font-weight: 300;
+  }
+
+  /* ─── CONCEPT STATEMENT ─── */
+  .concept {
+    padding: 160px 64px;
+    background: var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept::before {
+    content:''; position:absolute;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    width:700px; height:700px; border-radius:50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+  .concept::after {
+    content:''; position:absolute;
+    top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.2;
+  }
+  .concept .section-label {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 48px; justify-content:center;
+  }
+  .concept .section-label::before,
+  .concept .section-label::after {
+    content:''; width:32px; height:1px; background: var(--gold);
+  }
+  .concept h2 {
+    font-size: clamp(42px, 6vw, 88px);
+    font-weight: 900; line-height: 1.1;
+    margin-bottom: 16px; position:relative;
+  }
+  .concept h2 .gold { color: var(--gold); text-shadow: 0 0 60px rgba(201,168,76,0.2); }
+  .concept .concept-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-style: italic; color: var(--gold-light);
+    font-weight: 300; margin-bottom: 48px; letter-spacing: 3px;
+  }
+  .concept blockquote {
+    max-width: 500px; margin: 0 auto;
+    padding: 32px 40px;
+    border: 1px solid rgba(201,168,76,0.15);
+    font-size: 16px; line-height: 2;
+    color: rgba(255,255,255,0.6); font-weight: 300;
+    position: relative;
+  }
+  .concept blockquote::before {
+    content: '\201C';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px; color: var(--gold);
+    position: absolute; top: -20px; left: 24px;
+    line-height: 1; opacity: 0.4;
+  }
+
+  /* ─── VALUE MAP ─── */
+  .valuemap {
+    padding: 140px 64px;
+    background: var(--dark);
+  }
+  .valuemap-header {
+    max-width: 1200px; margin: 0 auto 80px;
+  }
+  .valuemap-header .section-label {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px;
+  }
+  .valuemap-header .section-label::before {
+    content:''; width:32px; height:1px; background: var(--gold);
+  }
+  .valuemap-header h2 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 900;
+  }
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px; max-width: 1200px; margin: 0 auto;
+    background: rgba(201,168,76,0.06);
+  }
+  .value-card {
+    padding: 52px 36px;
+    background: var(--dark-card);
+    transition: all 0.4s;
+    position: relative;
+  }
+  .value-card:hover {
+    background: #1c1c1c;
+    transform: translateY(-4px);
+  }
+  .value-card::before {
+    content:''; position:absolute; top:0; left:0; right:0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .value-card:hover::before { transform: scaleX(1); }
+  .value-icon {
+    width: 40px; height: 40px; margin-bottom: 24px;
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; color: var(--gold); font-style: italic;
+  }
+  .value-type {
+    font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 16px; font-weight: 500;
+  }
+  .value-card h3 {
+    font-size: 20px; font-weight: 700; margin-bottom: 14px;
+    color: var(--white);
+  }
+  .value-card p {
+    font-size: 13px; line-height: 1.9; color: var(--gray); font-weight: 300;
+  }
+
+  /* ─── PRODUCTS ─── */
+  .products {
+    padding: 140px 64px;
+    background: var(--cream);
+    color: var(--black);
+  }
+  .products-header {
+    text-align: center; margin-bottom: 80px;
+  }
+  .products-header .section-label {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px; justify-content: center;
+  }
+  .products-header .section-label::before,
+  .products-header .section-label::after {
+    content:''; width:32px; height:1px; background: var(--gold);
+  }
+  .products-header h2 {
+    font-size: clamp(28px, 3.5vw, 48px);
+    font-weight: 900; margin-bottom: 16px;
+  }
+  .products-header p {
+    font-size: 15px; color: #999; font-weight: 300; line-height: 1.8;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; max-width: 1200px; margin: 0 auto;
+  }
+  .product-card {
+    background: white;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .product-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.1);
+  }
+  .product-img {
+    width:100%; aspect-ratio: 4/5;
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  /* Crystal orb visualization */
+  .crystal {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.35) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(201,168,76,0.08) 0%, transparent 40%),
+      radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 60%, transparent 70%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow:
+      0 0 60px rgba(255,255,255,0.05),
+      0 0 120px rgba(201,168,76,0.06),
+      inset 0 0 40px rgba(255,255,255,0.03);
+    transition: all 0.6s;
+  }
+  .product-card:hover .crystal {
+    box-shadow:
+      0 0 80px rgba(201,168,76,0.15),
+      0 0 160px rgba(201,168,76,0.08);
+    transform: scale(1.05);
+  }
+  /* Cube variant */
+  .crystal.cube { border-radius: 16px; width: 110px; height: 110px; }
+  /* Sphere small */
+  .crystal.sphere { width: 120px; height: 120px; }
+  /* Eco variant */
+  .crystal.eco {
+    box-shadow:
+      0 0 60px rgba(76,180,120,0.08),
+      0 0 120px rgba(76,180,120,0.04);
+    border-color: rgba(76,180,120,0.15);
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(76,180,120,0.08) 0%, transparent 40%),
+      radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 60%, transparent 70%);
+  }
+  .product-color-bar { height: 3px; width: 100%; }
+  .product-card:nth-child(1) .product-color-bar { background: linear-gradient(90deg, #C9A84C, #E8D5A3); }
+  .product-card:nth-child(2) .product-color-bar { background: linear-gradient(90deg, #4A9EF5, #7BB8FF); }
+  .product-card:nth-child(3) .product-color-bar { background: linear-gradient(90deg, #6BCB77, #A8E6B0); }
+  .product-card:nth-child(4) .product-color-bar { background: linear-gradient(90deg, #A855F7, #C084FC); }
+  .product-info { padding: 32px 28px; }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold-dark, #8B6914); margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .product-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+  .product-tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; color: #999; font-style: italic;
+  }
+
+  /* ─── LIFESTYLE BAND ─── */
+  .lifestyle {
+    height: 50vh; min-height: 400px;
+    background: url('../assets/images/hero/yeonchul_6.jpg') center center / cover no-repeat;
+    position: relative;
+  }
+  .lifestyle::after {
+    content:''; position:absolute; inset:0;
+    background: rgba(8,8,8,0.5);
+  }
+  .lifestyle-text {
+    position: relative; z-index: 2;
+    height: 100%; display: flex;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .lifestyle-text h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 3vw, 42px);
+    font-weight: 300; font-style: italic;
+    color: var(--gold-light); letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .lifestyle-text p {
+    font-size: 14px; color: rgba(255,255,255,0.4);
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+
+  /* ─── CTA FINAL ─── */
+  .cta-final {
+    padding: 140px 64px;
+    background: var(--black);
+    text-align: center;
+    position: relative;
+  }
+  .cta-final::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse 50% 70% at 50% 80%, rgba(201,168,76,0.06) 0%, transparent 60%);
+  }
+  .cta-final h2 {
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 900; margin-bottom: 12px; position: relative;
+    line-height: 1.2;
+  }
+  .cta-final h2 .gold { color: var(--gold); }
+  .cta-final > p {
+    font-size: 16px; color: var(--gray); margin-bottom: 48px;
+    position: relative; font-weight: 300; letter-spacing: 1px;
+  }
+  .cta-final .btn-gold { position: relative; font-size: 14px; padding: 20px 56px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 48px 64px;
+    background: var(--black);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; color: var(--gold); letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+  .footer-copy { font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .intro { grid-template-columns: 1fr; }
+    .intro-image { min-height: 50vh; }
+    .tension-grid { grid-template-columns: 1fr; }
+    .tension-card { border-right:none; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .value-grid { grid-template-columns: repeat(2, 1fr); }
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    nav.scrolled { padding: 14px 24px; }
+    .nav-links { display: none; }
+    .hero-content { padding: 0 24px 80px; }
+    .tension, .concept, .valuemap, .products, .cta-final { padding: 100px 24px; }
+    .intro-text { padding: 60px 24px; }
+    .value-grid { grid-template-columns: 1fr; }
+    .product-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; }
+    footer { flex-direction: column; gap: 12px; padding: 32px 24px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ━━━ NAV ━━━ -->
+<nav id="nav">
+  <div class="nav-logo">JEWEL<em>ICE</em></div>
+  <div class="nav-links">
+    <a href="#">Brand</a>
+    <a href="#">Products</a>
+    <a href="#">Media</a>
+    <a href="#">Story</a>
+    <a href="#" class="nav-shop">Shop Now</a>
+  </div>
+</nav>
+
+<!-- ━━━ HERO ━━━ -->
+<section class="hero">
+  <div class="hero-image"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>The Final Jewel of Every Drink</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="line1">음료의</span><br>
+      <span class="line2">마지막 보석</span>
+    </h1>
+    <p class="hero-subtitle">Ice changes everything.</p>
+    <p class="hero-desc">
+      좋은 음료를 완성하는 마지막 재료는 얼음입니다.<br>
+      쥬얼아이스는 그 보석을, 당신의 집으로 가져왔습니다.
+    </p>
+    <div class="hero-cta-group">
+      <a href="#" class="btn-gold">
+        보석을 만나다
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+      </a>
+      <a href="#" class="btn-outline">Brand Story</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- ━━━ MARQUEE ━━━ -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>The Final Jewel</span>
+    <span>&middot;</span>
+    <span>Crystal Clear Ice</span>
+    <span>&middot;</span>
+    <span>Home Bar Lifestyle</span>
+    <span>&middot;</span>
+    <span>JewelIce</span>
+    <span>&middot;</span>
+    <span>음료의 마지막 보석</span>
+    <span>&middot;</span>
+    <span>The Final Jewel</span>
+    <span>&middot;</span>
+    <span>Crystal Clear Ice</span>
+    <span>&middot;</span>
+    <span>Home Bar Lifestyle</span>
+    <span>&middot;</span>
+    <span>JewelIce</span>
+    <span>&middot;</span>
+    <span>음료의 마지막 보석</span>
+    <span>&middot;</span>
+    <span>The Final Jewel</span>
+    <span>&middot;</span>
+    <span>Crystal Clear Ice</span>
+    <span>&middot;</span>
+    <span>Home Bar Lifestyle</span>
+    <span>&middot;</span>
+    <span>JewelIce</span>
+    <span>&middot;</span>
+    <span>음료의 마지막 보석</span>
+    <span>&middot;</span>
+  </div>
+</div>
+
+<!-- ━━━ INTRO SPLIT ━━━ -->
+<section class="intro">
+  <div class="intro-image"></div>
+  <div class="intro-text">
+    <div class="section-label">Brand Reframing</div>
+    <h2>이것은 얼음이 아니다.<br><span class="gold">음료를 완성하는 보석</span>이다.</h2>
+    <p>
+      커피는 스페셜티, 위스키는 싱글몰트가 됐습니다.<br>
+      그런데 거기 들어가는 얼음은? 아직도 냉동실 그대로.<br><br>
+      쥬얼아이스는 그 마지막 빈자리를 채웁니다.<br>
+      가정용 제빙기가 아니라, 음료 경험을 완성하는 도구.
+    </p>
+    <blockquote>
+      "컨셉은 제품의 이름표가 아니라,<br>
+      세상을 보는 새로운 렌즈다."
+    </blockquote>
+  </div>
+</section>
+
+<!-- ━━━ TENSION ━━━ -->
+<section class="tension">
+  <div class="tension-header">
+    <div class="section-label">Tension</div>
+    <h2>아무도 말하지 않은<br>얼음의 진실</h2>
+  </div>
+  <div class="tension-grid">
+    <div class="tension-card">
+      <div class="tension-num">01</div>
+      <h3>음료는 프리미엄화됐는데,<br>얼음은 여전히 냉동실</h3>
+      <p>스페셜티 커피, 싱글몰트 위스키. 음료 산업 전체가 프리미엄화됐는데, 마지막 재료인 얼음만 아직 거기 없었습니다.</p>
+    </div>
+    <div class="tension-card">
+      <div class="tension-num">02</div>
+      <h3>홈바 트렌드인데,<br>바 경험은 불가능했다</h3>
+      <p>고급 글라스, 좋은 술. 하지만 바텐더의 크리스탈 아이스볼은 집에서 만들 수 없었습니다. 지금까지는.</p>
+    </div>
+    <div class="tension-card">
+      <div class="tension-num">03</div>
+      <h3>"보석"이라 부르는데,<br>보석처럼 안 다뤘다</h3>
+      <p>브랜드 이름에 이미 "보석"이 들어있습니다. 이제 이름이 가진 가장 강력한 자원을 씁니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ CONCEPT ━━━ -->
+<section class="concept">
+  <div class="section-label">Brand Concept</div>
+  <h2>음료의<br><span class="gold">마지막 보석</span></h2>
+  <p class="concept-en">The Final Jewel of Every Drink</p>
+  <blockquote>
+    좋은 음료를 완성하는 마지막 재료는 얼음이다.<br>
+    쥬얼아이스는 그 보석을, 당신의 집으로 가져왔다.
+  </blockquote>
+</section>
+
+<!-- ━━━ VALUE MAP ━━━ -->
+<section class="valuemap">
+  <div class="valuemap-header">
+    <div class="section-label">Value Map</div>
+    <h2>보석이 약속하는 네 가지 가치</h2>
+  </div>
+  <div class="value-grid">
+    <div class="value-card">
+      <div class="value-icon">F</div>
+      <p class="value-type">Functional</p>
+      <h3>투명하고 천천히 녹는 얼음</h3>
+      <p>희석 없이 온도만 낮춘다. 구·정육면체로 음료별 최적 경험.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">E</div>
+      <p class="value-type">Emotional</p>
+      <h3>바텐더가 된 것 같은 느낌</h3>
+      <p>일상을 특별하게 만드는 작은 사치. 오늘 내 한 잔이 완벽해지는 순간.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">S</div>
+      <p class="value-type">Social</p>
+      <h3>홈바 취향의 상징</h3>
+      <p>"아는 사람만 아는" 커뮤니티 정체성. SNS에서 공유되는 비주얼.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">E</div>
+      <p class="value-type">Ethical</p>
+      <h3>지구를 생각하는 선택</h3>
+      <p>아블러제로 탄소절감 기술. 아름다움과 책임이 함께하는 소비.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ PRODUCTS ━━━ -->
+<section class="products">
+  <div class="products-header">
+    <div class="section-label">Collection</div>
+    <h2>보석의 형태들</h2>
+    <p>각각의 보석은 다른 음료를 위해 태어났습니다</p>
+  </div>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img"><div class="crystal"></div></div>
+      <div class="product-color-bar"></div>
+      <div class="product-info">
+        <p class="product-name">Duo Maker</p>
+        <h3 class="product-title">크리스탈 아이스볼의 탄생</h3>
+        <p class="product-tag">"투명함이 곧 실력이다"</p>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img"><div class="crystal cube"></div></div>
+      <div class="product-color-bar"></div>
+      <div class="product-info">
+        <p class="product-name">ABLR Cube</p>
+        <h3 class="product-title">위스키온더록의 정석</h3>
+        <p class="product-tag">"각진 완벽함, 천천히 녹는 사치"</p>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img"><div class="crystal sphere"></div></div>
+      <div class="product-color-bar"></div>
+      <div class="product-info">
+        <p class="product-name">ABLR Sphere</p>
+        <h3 class="product-title">하이볼의 보석</h3>
+        <p class="product-tag">"잔 속의 보석"</p>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img"><div class="crystal eco"></div></div>
+      <div class="product-color-bar"></div>
+      <div class="product-info">
+        <p class="product-name">ABLR Zero</p>
+        <h3 class="product-title">지구를 생각하는 보석</h3>
+        <p class="product-tag">"아름다움은 책임과 함께"</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ━━━ LIFESTYLE BAND ━━━ -->
+<section class="lifestyle">
+  <div class="lifestyle-text">
+    <h2>"이 한 잔이 완벽해지는 순간"</h2>
+    <p>JewelIce &times; Bar Experience</p>
+  </div>
+</section>
+
+<!-- ━━━ CTA FINAL ━━━ -->
+<section class="cta-final">
+  <h2>얼음이 달라지면,<br><span class="gold">오늘이 달라진다</span></h2>
+  <p>당신의 음료에 마지막 보석을 더하세요.</p>
+  <a href="#" class="btn-gold">
+    지금 만나보기
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+  </a>
+</section>
+
+<!-- ━━━ FOOTER ━━━ -->
+<footer>
+  <div class="footer-brand">JewelIce</div>
+  <p class="footer-copy">&copy; 2026 JewelIce by MasterMinding Group. The Final Jewel of Every Drink.</p>
+</footer>
+
+<script>
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Intersection Observer — staggered reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.transitionDelay = (i * 0.08) + 's';
+        entry.target.classList.add('revealed');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.tension-card, .value-card, .product-card, .intro-text h2, .intro-text p, .intro-text blockquote').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(32px)';
+    el.style.transition = 'opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)';
+    observer.observe(el);
+  });
+
+  // Add revealed class styles
+  const style = document.createElement('style');
+  style.textContent = '.revealed { opacity: 1 !important; transform: translateY(0) !important; }';
+  document.head.appendChild(style);
+</script>
+</body>
+</html>
