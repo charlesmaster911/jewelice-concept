@@ -9,3 +9,8 @@ desktop.ini
 
 # Docs (large PDFs - keep local only)
 docs/*.pdf
+# 환경변수 (절대 커밋 금지)
+.env
+.env.local
+.env.*.local
+node_modules/
